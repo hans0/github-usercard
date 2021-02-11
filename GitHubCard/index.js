@@ -3,7 +3,15 @@
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
+import axios from 'axios';
 
+const myGithubData = axios.get(`https://api.github.com/users/hans0`)
+  .then((res) => {
+    console.log(res);
+  })
+  .catch((err) => {
+    console.log(err)
+  })
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
     github info! You will need to understand the structure of this
@@ -49,7 +57,40 @@ const followersArray = [];
       </div>
     </div>
 */
-
+function createCard(object){
+  const cardDiv = document.createElement('div');
+  cardDiv.classList.add('card');
+  const userImageURL = document.createElement('img');
+  userImageURL.setAttribute('src', 'ADDRESS GOES HERE')
+  cardDiv.appendChild(userImageURL);
+  const cardInfoDiv = document.createElement('div');
+  cardInfoDiv.classList.add('card-info');
+  cardDiv.appendChild(cardInfoDiv);
+  const userActualNameHeader = document.createElement('h3');
+  userActualNameHeader.classList.add('name');
+  userActualNameHeader.innerText = 'USERS NAME';
+  cardInfoDiv.appendChild(userActualNameHeader);
+  const userNameParagraph = document.createElement('p');
+  userNameParagraph.classList.add('username');
+  userNameParagraph.innerText = 'USERS USERNAME';
+  cardInfoDiv.appendChild(userNameParagraph);
+  const userLocation = document.createElement('p');
+  userLocation.innerText = 'Location: LOCATION'
+  cardInfoDiv.appendChild(userLocation);
+  const userProfile = document.createElement('p');
+  userProfile.innerHTML = `Profile: <a href=ADDRESS>ADDRESS</a>`
+  cardInfoDiv.appendChild(userProfile);
+  const userFollowers = document.createElement('p');
+  userFollowers.innerText = `Followers: NO_FOLLOWERS`
+  cardInfoDiv.appendChild(userFollowers);
+  const userFollowing = document.createElement('p');
+  userFollowing.innerText = `Following: NO_FOLLOWING`;
+  cardInfoDiv.appendChild(userFollowing);
+  const userBiography = document.createElement('p');
+  userBiography.innerText = `Biography: BIOGRAPHY`
+  cardInfoDiv.appendChild(userBiography);
+  return cardDiv;
+}
 /*
   List of LS Instructors Github username's:
     tetondan
