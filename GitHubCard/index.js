@@ -3,6 +3,18 @@
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
+import axios from 'axios';
+
+// axios.get(`https://api.github.com/users/hans0`)
+//   .then((res) => {
+//     console.log(res.data);
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   })
+//   .then(() => {
+//     console.log('done');
+//   })
 
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
@@ -16,6 +28,16 @@
   STEP 4: Pass the data received from Github into your function,
     and append the returned markup to the DOM as a child of .cards
 */
+const cards = document.querySelector('.cards')
+
+axios.get(`https://api.github.com/users/hans0`)
+  .then((res) => {
+    cards.appendChild(createCard(res.data))
+  })
+  .catch((err) =>{
+    console.log(err);
+  })
+  
 
 /*
   STEP 5: Now that you have your own card getting added to the DOM, either
@@ -28,7 +50,40 @@
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = [
+  'tetondan',
+  'dustinmyers',
+  'justsml',
+  'luishrd',
+  'bigknell'
+];
+
+followersArray.forEach((follower) => {
+  axios.get(`https://api.github.com/users/${follower}`)
+  .then((res) => {
+    cards.appendChild(createCard(res.data));
+  })
+  .catch((err) => {
+    console.log(err)
+  })
+})
+
+axios.get(`https://api.github.com/users/hans0`)
+  .then((res) => {
+    axios.get(res.data.followers_url)
+      .then((followers) => {
+        followers.data.forEach((follower) => {
+          axios.get(`https://api.github.com/users/${follower.login}`)
+            .then((f) => {
+              cards.appendChild(createCard(f.data))
+            })
+            .catch()
+          // console.log(follower)
+        })
+        // console.log(followers.data)
+      })
+      .catch()
+  })
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
@@ -49,6 +104,50 @@ const followersArray = [];
       </div>
     </div>
 */
+function createCard(user){
+  // console.log(user)
+  const cardDiv = document.createElement('div');
+  cardDiv.classList.add('card');
+  const userImageURL = document.createElement('img');
+  userImageURL.setAttribute('src', `${user.avatar_url}`)
+  cardDiv.appendChild(userImageURL);
+  const cardInfoDiv = document.createElement('div');
+  cardInfoDiv.classList.add('card-info');
+  cardDiv.appendChild(cardInfoDiv);
+  const userActualNameHeader = document.createElement('h3');
+  userActualNameHeader.classList.add('name');
+  if (user.name){
+    userActualNameHeader.innerText = `${user.name}`;
+  } else {
+    userActualNameHeader.innerText = `${user.login}`
+  }
+  cardInfoDiv.appendChild(userActualNameHeader);
+  const userNameParagraph = document.createElement('p');
+  userNameParagraph.classList.add('username');
+  userNameParagraph.innerText = `${user.login}`;
+  cardInfoDiv.appendChild(userNameParagraph);
+  const userLocation = document.createElement('p');
+  if (user.location){
+    userLocation.innerText = `Location: ${user.location}`;
+  }
+  cardInfoDiv.appendChild(userLocation);
+  const userProfile = document.createElement('p');
+  userProfile.innerHTML = `Profile: <a href=${user.html_url}>${user.html_url}</a>`
+  cardInfoDiv.appendChild(userProfile);
+  const userFollowers = document.createElement('p');
+  userFollowers.innerText = `Followers: ${user.followers}`
+  cardInfoDiv.appendChild(userFollowers);
+  const userFollowing = document.createElement('p');
+  userFollowing.innerText = `Following: ${user.following}`;
+  cardInfoDiv.appendChild(userFollowing);
+  const userBiography = document.createElement('p');
+  if (user.bio){
+    userBiography.innerText = `Biography: ${user.bio}`;
+  }
+  cardInfoDiv.appendChild(userBiography);
+  return cardDiv;
+}
+
 
 /*
   List of LS Instructors Github username's:
